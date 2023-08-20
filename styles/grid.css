@@ -1,0 +1,205 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  height: 100vh;
+  width: 100vw; /* Use vw for viewport width */
+  margin: 0;
+  padding: 0;
+  background-color: gray;
+}
+
+
+
+.board {
+  display: flex; /* Use flex layout to align columns horizontally */
+  flex-wrap: wrap; /* Allow columns to wrap to the next line if necessary */
+  justify-content: center; /* Center columns horizontally */
+  margin: 0 auto; /* Center the container itself */
+  min-width: 700px;
+}
+
+.emptyCell {
+  height: 100px;
+  width: 100px;
+  background-color: blue; /* Change background color to blue */
+  border: 2px solid black;
+  margin-left: -1px;
+  margin-bottom: -4px;
+  display: inline-flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  position: relative;
+}
+
+.emptyCell::before {
+  content: "";
+  position: absolute;
+  width: 70px; /* Adjust the circle size as needed */
+  height: 70px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.hovered {
+  background-color: blue;
+  color: white;
+}
+.center {
+  margin: auto;
+  margin-top: 100px;
+}
+.playerOneCell {
+  height: 100px;
+  width: 100px;
+  background-color: blue; /* Set background to transparent */
+  border: 2px solid black;
+  margin-left: -1px;
+  margin-bottom: -4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.playerOneCell::before {
+  content: "";
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background-color: red; /* Set the circle color to red */
+  border-radius: 50%;
+}
+.playerTwoCell {
+  height: 100px;
+  width: 100px;
+  background-color: blue; /* Set background to transparent */
+  border: 2px solid black;
+  margin-left: -1px;
+  margin-bottom: -4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.playerTwoCell::before {
+  content: "";
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background-color: yellow; /* Set the circle color to yellow */
+  border-radius: 50%;
+}
+
+.message {
+  height: 100px;
+  background-color: #ea1111;
+  text-align: center;
+  font-size: 50px;
+  min-width: 700px;
+
+}
+.button {
+  height: 200px;
+  width: 50%;
+  margin-top: 1px;
+  background-color: #6f2232;
+  color: white;
+}
+.header {
+  background-color: #4e4e50;
+  height: 280px;
+  text-align: center;
+  font-size: 200px;
+  margin-top: 0;
+  color: white;
+  border: 3px solid black;
+}
+.MenuBody {
+  background-color: #1a1a1d;
+  height: 1000px;
+}
+.title {
+  background-color: #6f2232;
+  font-size: 100px;
+  text-align: center;
+  color: white;
+  border-bottom: 1px solid black;
+  border-right: 5px solid black;
+  border-left: 5px solid black;
+}
+.all {
+  width: 100vw; /* Use vw instead of vh */
+  background-color: #1a1a1d;
+}
+.headerPVP {
+  background-color: #4e4e50;
+  height: 200px;
+  text-align: center;
+  font-size: 150px;
+  margin-top: 0;
+  color: white;
+  display: flex;
+}
+.buttonsBack {
+  height: 200px;
+  width: 20%;
+  justify-content: left;
+  background-color: #6f2232;
+  color: white;
+}
+.leftover {
+  height: 300px;
+  background-color: #4e4e50;
+}
+.justtext1 {
+  padding-top: 50px;
+  margin-left: 24%;
+}
+.justtext2 {
+  padding-top: 20px;
+  margin-left: 16%;
+}
+
+.buttononly {
+  margin-top: 20%;
+  padding-right: 300px;
+  padding-left: 20px;
+}
+
+.buttononly1 {
+  min-width: 700px;
+
+  background-color: initial;
+  background-image: linear-gradient(-180deg, #4f69e0, #08478f);
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Inter,-apple-system,system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+  height: 60px;
+  line-height: 40px;
+  outline: 0;
+  overflow: hidden;
+  padding: 0 20px;
+  pointer-events: auto;
+  position: relative;
+  text-align: center;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: top;
+  white-space: nowrap;
+  width: 100%;
+  z-index: 9;
+  border: 0;
+  transition: box-shadow .2s;
+}
+
+.button-42:hover {
+  box-shadow: rgba(253, 76, 0, 0.5) 0 3px 8px;
+}
+
