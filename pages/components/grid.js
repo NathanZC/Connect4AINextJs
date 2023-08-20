@@ -21,11 +21,11 @@ class Grid extends React.Component {
   }
 
   dropPeice(col, player) {
-    if (player === 1) {
-      this.state.board[this.nextAvalibleRowInCol(col)][col] = 1;
-    } else {
-      this.state.board[this.nextAvalibleRowInCol(col)][col] = 2;
-    }
+    const row = this.nextAvalibleRowInCol(col);
+    const updatedBoard = [...this.state.board];
+    updatedBoard[row][col] = player === 1 ? 1 : 2;
+
+    this.setState({ board: updatedBoard });
   }
   evaluateBoard() {
     const player = 2; // AI player
@@ -114,11 +114,11 @@ class Grid extends React.Component {
     }
   }
   undoMove(col, player) {
-    if (player === 1) {
-      this.state.board[this.nextAvalibleRowInCol(col) + 1][col] = 0;
-    } else {
-      this.state.board[this.nextAvalibleRowInCol(col) + 1][col] = 0;
-    }
+    const row = this.nextAvalibleRowInCol(col) + 1;
+    const updatedBoard = [...this.state.board];
+    updatedBoard[row][col] = 0;
+
+    this.setState({ board: updatedBoard });
   }
   nextAvalibleRowInCol(col) {
     var emptySpotFound = false;
