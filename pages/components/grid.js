@@ -683,7 +683,7 @@ checkGameOver() {
           <input
             className="buttononly1"
             type="submit"
-            value="RESET GAME :)"
+            value="RESET GAME!"
             onClick={() => this.initBoard()}
           />
         <div className="board" style={{ width: width }}>
