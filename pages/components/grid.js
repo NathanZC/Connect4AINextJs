@@ -613,7 +613,7 @@ class Grid extends React.Component {
 
     for (var i = 0; i < allPossibleMoves.length; i++) {
       this.dropPeice(allPossibleMoves[i], 2);
-      score = this.miniMax(6, false, alpha, beta);
+      score = this.miniMax(8, false, alpha, beta);
       scores.push(score); // Add the score to the scores array
       this.undoMove(allPossibleMoves[i], 2);
       if (score > bestScore) {
@@ -683,7 +683,7 @@ checkGameOver() {
           <input
             className="buttononly1"
             type="submit"
-            value="RESET GAME"
+            value="RESET GAME :)"
             onClick={() => this.initBoard()}
           />
         <div className="board" style={{ width: width }}>
