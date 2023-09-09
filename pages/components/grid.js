@@ -1,7 +1,7 @@
 import React from "react";
 import Cell from "./cell.js";
 import useSound from "use-sound";
-
+import Particles from "./particles.js";
 class Grid extends React.Component {
   constructor(props) {
     super(props);
@@ -179,7 +179,6 @@ class Grid extends React.Component {
     var rows = 6;
     var cols = 7;
     var gameOver = false;
-    // checks to see if player got 4 horizontally in a row
     var horizontalCounterP1 = 0;
     var horizontalCounterP2 = 0;
     for (var i = 0; i < rows; i++) {
@@ -199,12 +198,10 @@ class Grid extends React.Component {
 
         if (horizontalCounterP2 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 2 WINS!");
           break;
         }
         if (horizontalCounterP1 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 1 WINS!");
           break;
         }
       }
@@ -228,12 +225,10 @@ class Grid extends React.Component {
 
         if (verticalCounterP1 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 1 WINS!");
           break;
         }
         if (verticalCounterP2 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 2 WINS!");
           break;
         }
       }
@@ -259,11 +254,9 @@ class Grid extends React.Component {
 
         if (diagonalCounterP1 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 1 WINS!");
         }
         if (diagonalCounterP2 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 2 WINS!");
         }
       }
     }
@@ -286,11 +279,9 @@ class Grid extends React.Component {
 
         if (diagonalCounterP1 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 1 WINS!");
         }
         if (diagonalCounterP2 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 2 WINS!");
         }
       }
     }
@@ -315,11 +306,9 @@ class Grid extends React.Component {
 
         if (diagonalCounterP1 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 1 WINS!");
         }
         if (diagonalCounterP2 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 2 WINS!");
         }
       }
     }
@@ -342,11 +331,9 @@ class Grid extends React.Component {
 
         if (diagonalCounterP1 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 1 WINS!");
         }
         if (diagonalCounterP2 >= 4) {
           gameOver = true;
-          // System.out.println("GAME OVER Player 2 WINS!");
         }
       }
     }
@@ -403,11 +390,9 @@ class Grid extends React.Component {
 
         if (horizontalCounterP2 >= 4) {
           return "P2";
-          // System.out.println("GAME OVER Player 2 WINS!");
         }
         if (horizontalCounterP1 >= 4) {
           return "P1";
-          // System.out.println("GAME OVER Player 1 WINS!");
         }
       }
     }
@@ -430,11 +415,9 @@ class Grid extends React.Component {
 
         if (verticalCounterP1 >= 4) {
           return "P1";
-          // System.out.println("GAME OVER Player 1 WINS!");
         }
         if (verticalCounterP2 >= 4) {
           return "P2";
-          // System.out.println("GAME OVER Player 2 WINS!");
         }
       }
     }
@@ -459,11 +442,9 @@ class Grid extends React.Component {
 
         if (diagonalCounterP1 >= 4) {
           return "P1";
-          // System.out.println("GAME OVER Player 1 WINS!");
         }
         if (diagonalCounterP2 >= 4) {
           return "P2";
-          // System.out.println("GAME OVER Player 2 WINS!");
         }
       }
     }
@@ -486,11 +467,9 @@ class Grid extends React.Component {
 
         if (diagonalCounterP1 >= 4) {
           return "P1";
-          // System.out.println("GAME OVER Player 1 WINS!");
         }
         if (diagonalCounterP2 >= 4) {
           return "P2";
-          // System.out.println("GAME OVER Player 2 WINS!");
         }
       }
     }
@@ -512,14 +491,11 @@ class Grid extends React.Component {
         } else {
           diagonalCounterP2 = 0;
         }
-
         if (diagonalCounterP1 >= 4) {
           return "P1";
-          // System.out.println("GAME OVER Player 1 WINS!");
         }
         if (diagonalCounterP2 >= 4) {
           return "P2";
-          // System.out.println("GAME OVER Player 2 WINS!");
         }
       }
     }
@@ -603,7 +579,7 @@ class Grid extends React.Component {
     return possibles;
   }
   aiBestMove() {
-    var scores = []; // Array to store the scores of each move
+    var scores = []; 
     var allPossibleMoves = this.getAllPossibleMoves();
     var score = 0;
     var bestScore = -Infinity;
@@ -614,14 +590,14 @@ class Grid extends React.Component {
     for (var i = 0; i < allPossibleMoves.length; i++) {
       this.dropPeice(allPossibleMoves[i], 2);
       score = this.miniMax(7, false, alpha, beta);
-      scores.push(score); // Add the score to the scores array
+      scores.push(score); 
       this.undoMove(allPossibleMoves[i], 2);
       if (score > bestScore) {
         bestScore = score;
         move = allPossibleMoves[i];
       }
     }
-    console.log(scores); // Print the array of scores for analysis
+    console.log(scores); 
     return move;
   }
 checkGameOver() {
@@ -688,8 +664,9 @@ checkGameOver() {
           />
         <div className="board" style={{ width: width }}>
           {this.state.boardDisplay}
+          <Particles />
         </div>
-        <div className="message">{this.state.message}</div> {/* Move this line here */}
+        <div className="message">{this.state.message}</div>
       </div>
     );
   }

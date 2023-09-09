@@ -132,7 +132,6 @@ body {
 }
 .all {
   width: 100vw; /* Use vw instead of vh */
-  background-color: #1a1a1d;
 }
 .headerPVP {
   background-color: #4e4e50;
@@ -157,6 +156,7 @@ body {
 .justtext1 {
   padding-top: 50px;
   margin-left: 24%;
+  
 }
 .justtext2 {
   padding-top: 20px;
