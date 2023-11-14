@@ -1,7 +1,6 @@
 import React from "react";
 import Cell from "./cell.js";
 import useSound from "use-sound";
-import Particles from "./particles.js";
 class Grid extends React.Component {
   constructor(props) {
     super(props);
@@ -533,7 +532,7 @@ class Grid extends React.Component {
     return "NONE";
   }
 
-  initBoard() {
+  initBoard(p) {
     var stateBoard = [
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
@@ -560,12 +559,24 @@ class Grid extends React.Component {
         );
       }
     }
-
-    this.setState({
-      board: stateBoard,
-      boardDisplay: NewBoard,
-      message: "NEW GAME! YOU GO FIRST",
-    });
+    if (p){
+      this.setState({
+        playerOneTurn: 1,
+        board: stateBoard,
+        boardDisplay: NewBoard,
+        message: "AI is thinking",
+      }, () => {
+        setTimeout(() => {
+          this.playAI();
+        }, 0); // Delay of 1000 milliseconds (1 second)
+      });
+    } else{
+      this.setState({
+        board: stateBoard,
+        boardDisplay: NewBoard,
+        message: "NEW GAME! YOU GO FIRST",
+      });
+    }
   }
 
   getAllPossibleMoves() {
@@ -656,17 +667,30 @@ checkGameOver() {
     var width = 100 * 7 + "px";
     return (
       <div className="all">
-          <input
+        <div className="container-top">
+        <input
             className="buttononly1"
             type="submit"
-            value="RESET GAME!"
-            onClick={() => this.initBoard()}
+            value="RESET GAME and GO FIRST"
+            onClick={() => this.initBoard(0)}
           />
+                  <input
+            className="buttononly1"
+            type="submit"
+            value="RESET GAME and GO SECOND"
+            onClick={() => this.initBoard(1)}
+          />
+        </div>
+
         <div className="board" style={{ width: width }}>
           {this.state.boardDisplay}
-          <Particles />
         </div>
+        <div className="container-top">
         <div className="message">{this.state.message}</div>
+        </div>
+        <div className="container-top">
+        <div className="message">HIGHSCORES<br /> COMING SOON</div>
+        </div>
       </div>
     );
   }

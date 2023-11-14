@@ -7,7 +7,9 @@ body {
   width: 100vw; /* Use vw for viewport width */
   margin: 0;
   padding: 0;
-  background-color: gray;
+  display: flex;
+  justify-content: center;
+  background-color: #bfdbfe;
 }
 
 
@@ -23,7 +25,7 @@ body {
 .emptyCell {
   height: 100px;
   width: 100px;
-  background-color: blue; /* Change background color to blue */
+  background-color: rgb(0, 0, 213); /* Change background color to blue */
   border: 2px solid black;
   margin-left: -1px;
   margin-bottom: -4px;
@@ -38,8 +40,10 @@ body {
   position: absolute;
   width: 70px; /* Adjust the circle size as needed */
   height: 70px;
-  background-color: white;
   border-radius: 50%;
+  background-color: #f8f8f8eb;
+  border: 2px solid #FFF;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
 }
 
 .hovered {
@@ -53,7 +57,7 @@ body {
 .playerOneCell {
   height: 100px;
   width: 100px;
-  background-color: blue; /* Set background to transparent */
+  background-color: rgb(0, 0, 213); /* Change background color to blue */
   border: 2px solid black;
   margin-left: -1px;
   margin-bottom: -4px;
@@ -68,13 +72,15 @@ body {
   position: absolute;
   width: 70px;
   height: 70px;
-  background-color: red; /* Set the circle color to red */
+  box-shadow: 0 0 10px rgba(255,99,71,0.8);
+  background-color: #ff2600; /* tomato red */
   border-radius: 50%;
 }
 .playerTwoCell {
   height: 100px;
   width: 100px;
-  background-color: blue; /* Set background to transparent */
+  background-color: rgb(0, 0, 213); /* Change background color to blue */
+  
   border: 2px solid black;
   margin-left: -1px;
   margin-bottom: -4px;
@@ -86,20 +92,22 @@ body {
 
 .playerTwoCell::before {
   content: "";
+  
   position: absolute;
   width: 70px;
   height: 70px;
-  background-color: yellow; /* Set the circle color to yellow */
+  background-color: #ffd700; /* gold */
+  box-shadow: 0 0 10px rgba(255, 222, 35, 0.592);
   border-radius: 50%;
 }
 
 .message {
-  height: 100px;
-  background-color: #ea1111;
+  height: 200px;
+  background-color: #003366;
   text-align: center;
   font-size: 50px;
-  min-width: 700px;
-
+  min-width: 694px;
+  color: white;
 }
 .button {
   height: 200px;
@@ -132,6 +140,7 @@ body {
 }
 .all {
   width: 100vw; /* Use vw instead of vh */
+  
 }
 .headerPVP {
   background-color: #4e4e50;
@@ -168,35 +177,35 @@ body {
   padding-right: 300px;
   padding-left: 20px;
 }
+.container-top {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  
+}
 
 .buttononly1 {
-  min-width: 700px;
-
-  background-color: initial;
-  background-image: linear-gradient(-180deg, #4f69e0, #08478f);
-  border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-  color: #FFFFFF;
+  background-color: #003366;
+  color: white; /* Dark text for contrast */
+  border: 2px solid  rgb(0, 0, 57);
   cursor: pointer;
   display: inline-block;
-  font-family: Inter,-apple-system,system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
-  height: 60px;
-  line-height: 40px;
+  font-family: Inter, -apple-system, system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: medium;
+  height: 70px;
+  line-height: 70px; /* Adjust for vertical centering */
   outline: 0;
-  overflow: hidden;
-  padding: 0 20px;
-  pointer-events: auto;
-  position: relative;
-  text-align: center;
+  justify-content: center;
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
-  vertical-align: top;
+  vertical-align: middle;
   white-space: nowrap;
-  width: 100%;
-  z-index: 9;
-  border: 0;
-  transition: box-shadow .2s;
+  width: 347.1px; /* Adjust width to content */
+  padding: 0 20px; /* Horizontal padding */
+  
+  transition: background-color .2s, box-shadow .2s; /* Smooth transition for hover effects */
+
 }
 
 .button-42:hover {
