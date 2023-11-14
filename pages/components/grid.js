@@ -640,7 +640,7 @@ class Grid extends React.Component {
   
     for (var i = 0; i < allPossibleMoves.length; i++) {
       this.dropPeice(allPossibleMoves[i], 2);
-      score = this.miniMax(10, false, alpha, beta);
+      score = this.miniMax(9, false, alpha, beta);
       scores.push(score);
       this.undoMove(allPossibleMoves[i], 2);
   
