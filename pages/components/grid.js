@@ -12,8 +12,7 @@ class Grid extends React.Component {
       message: "PLAYER 1 GO!",
       isAIThinking: false,
     };
-
-    // Bind play function to App component
+    this.cache = new Map();
   }
   componentDidMount() {
     this.initBoard();
@@ -31,7 +30,12 @@ class Grid extends React.Component {
     const opponent = 1; // Human player
   
     let score = 0;
-  
+    for (let row = 0; row < 6; row++) {
+      if (this.state.board[row][3] === player) {
+        score += 1; // Assign a small score for each piece in the center column
+      }
+    }
+
     // Evaluate horizontally
     for (let row = 0; row < 6; row++) {
       for (let col = 0; col < 4; col++) {
@@ -48,8 +52,30 @@ class Grid extends React.Component {
       }
     }
   
-    // TODO: Evaluate diagonals
-  
+    // Evaluate left-leaning (/) diagonals
+    for (let row = 3; row < 6; row++) {
+      for (let col = 0; col < 4; col++) {
+        const window = [
+          this.state.board[row][col],
+          this.state.board[row - 1][col + 1],
+          this.state.board[row - 2][col + 2],
+          this.state.board[row - 3][col + 3]
+        ];
+        score += this.evaluateWindow(window, player, opponent);
+      }
+    }
+    // Evaluate right-leaning (\) diagonals
+    for (let row = 3; row < 6; row++) {
+      for (let col = 3; col < 7; col++) {
+        const window = [
+          this.state.board[row][col],
+          this.state.board[row - 1][col - 1],
+          this.state.board[row - 2][col - 2],
+          this.state.board[row - 3][col - 3]
+        ];
+        score += this.evaluateWindow(window, player, opponent);
+      }
+    }
     return score;
   }
   
@@ -65,22 +91,31 @@ class Grid extends React.Component {
     // Penalize opponent windows
     if (opponentCount === 3 && playerCount === 0) return -100;
     if (opponentCount === 2 && playerCount === 0) return -10;
-  
+    
     return 0;
   }
   
   miniMax(depth, isMaximizing, alpha, beta) {
+    const boardKey = JSON.stringify(this.state.board) + (isMaximizing ? "_P2" : "_P1");
+    if (this.cache.has(boardKey)) {
+      const cached = this.cache.get(boardKey);
+      if (cached.depth >= depth) {
+        return cached.score;
+      }
+    }
     var moves = this.getAllPossibleMoves();
     var score = 0;
     if (this.gameOver() || moves.length === 0 || depth === 0) {
       if (this.checkWinner() === "P1") {
-        return -100000;
+        return -Infinity;
       } else if (this.checkWinner() === "P2") {
-        return 100000;
+        return Infinity;
       } else if (moves.length === 0) {
         return 0;
       } else {
-        return this.evaluateBoard();
+        var x = this.evaluateBoard()
+        this.cache.set(boardKey, { score: x, depth: depth });
+        return x;
       }
     } else {
       if (isMaximizing) {
@@ -95,6 +130,7 @@ class Grid extends React.Component {
             break;
           }
         }
+        this.cache.set(boardKey, { score: bestScore, depth: depth });
         return bestScore;
       } else {
         bestScore = Infinity;
@@ -108,10 +144,12 @@ class Grid extends React.Component {
             break;
           }
         }
+        this.cache.set(boardKey, { score: bestScore, depth: depth });
         return bestScore;
       }
     }
   }
+
   undoMove(col, player) {
     const row = this.nextAvalibleRowInCol(col) + 1;
     const updatedBoard = [...this.state.board];
@@ -590,25 +628,30 @@ class Grid extends React.Component {
     return possibles;
   }
   aiBestMove() {
-    var scores = []; 
+    var scores = [];
     var allPossibleMoves = this.getAllPossibleMoves();
     var score = 0;
     var bestScore = -Infinity;
+    var bestMoveDistanceFromCenter = Infinity;
     var move = 0;
     var alpha = -Infinity;
     var beta = Infinity;
-
+    var centerColumnIndex = 3; // Middle column for a 7-column board
+  
     for (var i = 0; i < allPossibleMoves.length; i++) {
       this.dropPeice(allPossibleMoves[i], 2);
-      score = this.miniMax(7, false, alpha, beta);
-      scores.push(score); 
+      score = this.miniMax(9, false, alpha, beta);
+      scores.push(score);
       this.undoMove(allPossibleMoves[i], 2);
-      if (score > bestScore) {
+  
+      var distanceFromCenter = Math.abs(allPossibleMoves[i] - centerColumnIndex);
+      if (score > bestScore || (score === bestScore && distanceFromCenter < bestMoveDistanceFromCenter)) {
         bestScore = score;
         move = allPossibleMoves[i];
+        bestMoveDistanceFromCenter = distanceFromCenter;
       }
     }
-    console.log(scores); 
+    console.log(scores);
     return move;
   }
 checkGameOver() {
