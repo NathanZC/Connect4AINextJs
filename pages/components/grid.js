@@ -1,6 +1,7 @@
 import React from "react";
 import Cell from "./cell.js";
 import useSound from "use-sound";
+import LRUCache from "lru-cache";
 class Grid extends React.Component {
   constructor(props) {
     super(props);
@@ -12,13 +13,13 @@ class Grid extends React.Component {
       message: "PLAYER 1 GO!",
       isAIThinking: false,
     };
-    this.cache = new Map();
+    this.cache = new LRUCache({ max: 800 });
   }
   componentDidMount() {
     this.initBoard();
   }
 
-  dropPeice(col, player) {
+  dropPiece(col, player) {
     const row = this.nextAvalibleRowInCol(col);
     const updatedBoard = [...this.state.board];
     updatedBoard[row][col] = player === 1 ? 1 : 2;
@@ -96,15 +97,16 @@ class Grid extends React.Component {
   }
   
   miniMax(depth, isMaximizing, alpha, beta) {
-    const boardKey = JSON.stringify(this.state.board) + (isMaximizing ? "_P2" : "_P1");
+    const boardKey =
+      JSON.stringify(this.state.board) + (isMaximizing ? "_P2" : "_P1");
     if (this.cache.has(boardKey)) {
       const cached = this.cache.get(boardKey);
       if (cached.depth >= depth) {
         return cached.score;
       }
     }
-    var moves = this.getAllPossibleMoves();
-    var score = 0;
+    const moves = this.getAllPossibleMoves();
+    let score = 0;
     if (this.gameOver() || moves.length === 0 || depth === 0) {
       if (this.checkWinner() === "P1") {
         return -Infinity;
@@ -113,15 +115,15 @@ class Grid extends React.Component {
       } else if (moves.length === 0) {
         return 0;
       } else {
-        var x = this.evaluateBoard()
+        const x = this.evaluateBoard();
         this.cache.set(boardKey, { score: x, depth: depth });
         return x;
       }
     } else {
       if (isMaximizing) {
-        var bestScore = -Infinity;
-        for (var i = 0; i < moves.length; i++) {
-          this.dropPeice(moves[i], 2);
+        let bestScore = -Infinity;
+        for (let i = 0; i < moves.length; i++) {
+          this.dropPiece(moves[i], 2);
           score = this.miniMax(depth - 1, false, alpha, beta);
           this.undoMove(moves[i], 2);
           bestScore = Math.max(score, bestScore);
@@ -133,9 +135,9 @@ class Grid extends React.Component {
         this.cache.set(boardKey, { score: bestScore, depth: depth });
         return bestScore;
       } else {
-        bestScore = Infinity;
-        for (i = 0; i < moves.length; i++) {
-          this.dropPeice(moves[i], 1);
+        let bestScore = Infinity;
+        for (let i = 0; i < moves.length; i++) {
+          this.dropPiece(moves[i], 1);
           score = this.miniMax(depth - 1, true, alpha, beta);
           this.undoMove(moves[i], 1);
           bestScore = Math.min(score, bestScore);
@@ -639,8 +641,8 @@ class Grid extends React.Component {
     var centerColumnIndex = 3; // Middle column for a 7-column board
   
     for (var i = 0; i < allPossibleMoves.length; i++) {
-      this.dropPeice(allPossibleMoves[i], 2);
-      score = this.miniMax(9, false, alpha, beta);
+      this.dropPiece(allPossibleMoves[i], 2);
+      score = this.miniMax(8, false, alpha, beta);
       scores.push(score);
       this.undoMove(allPossibleMoves[i], 2);
   
@@ -673,7 +675,7 @@ checkGameOver() {
       if (!this.gameOver()) {
         if (this.state.playerOneTurn % 2 === 0) {
           this.setState({ message: "AI is thinking" }, async () => {
-            this.dropPeice(jValue, 1);
+            this.dropPiece(jValue, 1);
             this.setState({ playerOneTurn: 1 });
   
             const audio = new Audio("/plop.mp3");
@@ -697,7 +699,7 @@ checkGameOver() {
   
   playAI = () => {
     this.setState({ message: "AI is thinking" }, () => {
-      this.dropPeice(this.aiBestMove(), 2);
+      this.dropPiece(this.aiBestMove(), 2);
       this.updateboard();
       this.setState({ message: "YOUR TURN!", playerOneTurn: 2 });
       const audio = new Audio("/plop.mp3");
