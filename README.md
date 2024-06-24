@@ -5,7 +5,7 @@ Overview
 Connect4AI is an engaging and interactive Connect Four game that pits players against an AI opponent. The AI uses the MiniMax algorithm with alpha-beta pruning for efficient decision-making and caching for optimized performance.
 
 Demo
-Try the game here.
+Try the game [here](https://connect4ai.vercel.app/).
 
 Technologies Used
 Next.js: A React framework for building server-side rendered and statically generated web applications.
@@ -18,25 +18,23 @@ To run the development server locally, follow these steps:
 Clone the repository:
 
 bash
-git clone https://github.com/your-username/connect4ai.git
-cd connect4ai
+git clone https://github.com/NathanZC/Connect4AINextJs
+cd Connect4AINextJs
 Install dependencies:
-
 bash
-
 npm install
-# or
+ or
 yarn install
-# or
+ or
 pnpm install
 Run the development server:
 
 bash
 
 npm run dev
-# or
+ or
 yarn dev
-# or
+ or
 pnpm dev
 Open your browser: Visit http://localhost:3000 to see the game.
 
@@ -46,22 +44,6 @@ Make a move: Click on the desired column to drop your piece.
 AI Move: The AI will make its move after you. The AI's decision-making is powered by the MiniMax algorithm with alpha-beta pruning and caching for improved performance.
 Folder Structure
 plaintext
-
-  connect4ai/
-  ├── public/
-  ├── src/
-  │   ├── components/
-  │   │   ├── Cell.js
-  │   │   └── Grid.js
-  │   ├── pages/
-  │   │   └── index.js
-  │   └── styles/
-  ├── .gitignore
-  ├── package.json
-  ├── README.md
-  └── next.config.js
-Contributing
-Contributions are welcome! If you have suggestions for improvements or find any issues, please open an issue or submit a pull request.
 
 License
 This project is licensed under the MIT License.
