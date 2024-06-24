@@ -47,19 +47,19 @@ AI Move: The AI will make its move after you. The AI's decision-making is powere
 Folder Structure
 plaintext
 
-connect4ai/
-├── public/
-├── src/
-│   ├── components/
-│   │   ├── Cell.js
-│   │   └── Grid.js
-│   ├── pages/
-│   │   └── index.js
-│   └── styles/
-├── .gitignore
-├── package.json
-├── README.md
-└── next.config.js
+  connect4ai/
+  ├── public/
+  ├── src/
+  │   ├── components/
+  │   │   ├── Cell.js
+  │   │   └── Grid.js
+  │   ├── pages/
+  │   │   └── index.js
+  │   └── styles/
+  ├── .gitignore
+  ├── package.json
+  ├── README.md
+  └── next.config.js
 Contributing
 Contributions are welcome! If you have suggestions for improvements or find any issues, please open an issue or submit a pull request.
 
