@@ -18,7 +18,7 @@ To run the development server locally, follow these steps:
 Clone the repository:
 
 bash
-git clone https://github.com/NathanZC/Connect4AINextJs
+git clone https://github.com/NathanZC/Connect4AINextJs.git
 cd Connect4AINextJs
 Install dependencies:
 bash
