@@ -1,8 +1,5 @@
 Connect4AI
-Welcome to Connect4AI, a Connect Four game built using Next.js, utilizing the MiniMax algorithm with alpha-beta pruning and caching to create a challenging AI opponent. You can play the game online here.
-
-Overview
-Connect4AI is an engaging and interactive Connect Four game that pits players against an AI opponent. The AI uses the MiniMax algorithm with alpha-beta pruning for efficient decision-making and caching for optimized performance.
+Welcome to Connect4AI, a Connect Four game built using Next.js, utilizing the MiniMax algorithm with alpha-beta pruning and caching to create a challenging AI opponent.
 
 Demo
 Try the game [here](https://connect4ai.vercel.app/).
@@ -18,25 +15,24 @@ To run the development server locally, follow these steps:
 Clone the repository:
 
 bash
-git clone https://github.com/NathanZC/Connect4AINextJs.git
+```git clone https://github.com/NathanZC/Connect4AINextJs.git
 cd Connect4AINextJs
+```  
 Install dependencies:
 bash
-npm install
+```npm install```
  or
-yarn install
+```yarn install```
  or
-pnpm install
+```pnpm install```
 Run the development server:
-
 bash
-
-npm run dev
+```npm run dev```
  or
-yarn dev
+```yarn dev```
  or
-pnpm dev
-Open your browser: Visit http://localhost:3000 to see the game.
+```pnpm dev```
+Open your browser: Visit ```http://localhost:3000``` to see the game.  
 
 How to Play
 Start a new game: Click the "NEW GAME: YOU FIRST" button to start a game where you make the first move, or click the "NEW GAME: AI FIRST" button to let the AI start.
