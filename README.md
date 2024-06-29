@@ -12,8 +12,8 @@ LRU Cache: A caching mechanism to store and retrieve board states efficiently, l
 Getting Started
 To run the development server locally, follow these steps:
 
-# Clone the repository:
-bash
+# Clone the repository:  
+bash  
 ```git clone https://github.com/NathanZC/Connect4AINextJs.git```  
 ```cd Connect4AINextJs```  
 Install dependencies:  
