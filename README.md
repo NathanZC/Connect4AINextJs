@@ -15,23 +15,22 @@ To run the development server locally, follow these steps:
 Clone the repository:
 
 bash
-```git clone https://github.com/NathanZC/Connect4AINextJs.git
-cd Connect4AINextJs
-```  
-Install dependencies:
-bash
-```npm install```
- or
-```yarn install```
- or
-```pnpm install```
-Run the development server:
-bash
-```npm run dev```
- or
-```yarn dev```
- or
-```pnpm dev```
+```git clone https://github.com/NathanZC/Connect4AINextJs.git```  
+```cd Connect4AINextJs```  
+Install dependencies:  
+bash   
+```npm install```  
+ or  
+```yarn install```  
+ or  
+```pnpm install```  
+Run the development server:  
+bash  
+```npm run dev```  
+ or  
+```yarn dev```  
+ or  
+```pnpm dev```  
 Open your browser: Visit ```http://localhost:3000``` to see the game.  
 
 How to Play
