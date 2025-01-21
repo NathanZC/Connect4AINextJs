@@ -4,7 +4,7 @@ A Connect Four game implementation with AI opponent using the Minimax algorithm,
 
 ## Demo
 
-Try it out here: [Connect4 AI Demo](https://connect4-ai-next.vercel.app)
+Try it out here: [Connect4 AI Demo](https://connect4ai.vercel.app/)
 
 ## Features
 
