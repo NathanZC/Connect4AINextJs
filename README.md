@@ -2,6 +2,10 @@
 
 A Connect Four game implementation with AI opponent using the Minimax algorithm, built with Next.js.
 
+## Demo
+
+Try it out here: [Connect4 AI Demo](https://connect4-ai-next.vercel.app)
+
 ## Features
 
 - Play Connect Four against an AI opponent
