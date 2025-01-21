@@ -1,39 +1,11 @@
-# Connect4 AI
+This is a Connect4AI built in NextJS Using the MiniMax Algorithem
 
-A Connect Four game implementation with AI opponent using the Minimax algorithm, built with Next.js.
-
-## Features
-
-- Play Connect Four against an AI opponent
-- AI powered by the Minimax algorithm
-- Modern, responsive web interface
-- Built with Next.js for optimal performance
-
-## Technologies
-
-- [Next.js](https://nextjs.org/)
-- React
-- JavaScript
-- CSS
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
-1. Clone the repository:
-```bash
-git clone [your-repo-url]
-cd connect4-ai
-```
+First, run the development server:
 
-2. Install dependencies:
-```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-```
-
-3. Run the development server:
 ```bash
 npm run dev
 # or
@@ -42,10 +14,6 @@ yarn dev
 pnpm dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to play the game.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## How to Play
-
-1. Click on any column to drop a piece
-2. Try to connect 4 pieces horizontally, vertically, or diagonally
-3. Play against the AI which uses the Minimax algorithm to make strategic moves
+You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
