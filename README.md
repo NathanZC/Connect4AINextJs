@@ -24,7 +24,7 @@ Try it out here: [Connect4 AI Demo](https://connect4ai.vercel.app/)
 
 1. Clone the repository:
 ```bash
-git clone [your-repo-url]
+git clone https://github.com/NathanZC/Connect4AINextJs.git
 cd connect4-ai
 ```
 
