@@ -640,22 +640,29 @@ class Grid extends React.Component {
     console.log(scores);
     return move;
   }
-checkGameOver() {
+  isBoardFull() {
+    // Check if any column in top row has an empty space
+    return this.state.board[0].every(cell => cell !== 0);
+  }
+  checkGameOver() {
     if (this.gameOver()) {
-        if (this.checkWinner() === "P1") {
-          this.setState({
-            message: "YOU WIN. ENTER YOUR NAME TO SAVE IT TO THE WEBSITE!",
-          });
-        } else if (this.checkWinner() === "P2") {
-          this.setState({ message: "YOU LOST!" });
-        } else {
-          this.setState({ message: "tie game" });
-        }
+      if (this.checkWinner() === "P1") {
+        this.setState({
+          message: "YOU WIN. ENTER YOUR NAME TO SAVE IT TO THE WEBSITE!",
+        });
+      } else if (this.checkWinner() === "P2") {
+        this.setState({ message: "YOU LOST!" });
       }
+    } else if (this.isBoardFull()) {
+      // Add explicit tie check
+      this.setState({ 
+        message: "IT'S A TIE!",
+      });
+    }
   }
   clicked = async (colIndex) => {
     if (this.validMove(colIndex)) {
-      if (!this.gameOver()) {
+      if (!this.gameOver() && !this.isBoardFull()) {  // Add tie check
         if (this.state.playerOneTurn % 2 === 0) {
           // Player's move
           if (this.dropPiece(colIndex, 1)) {
@@ -664,6 +671,12 @@ checkGameOver() {
             
             const audio = new Audio("/plop.mp3");
             await audio.play();
+            
+            // Check for tie after player move
+            if (this.isBoardFull()) {
+              this.checkGameOver();
+              return;
+            }
             
             // Start AI turn
             await this.playAI();
@@ -695,6 +708,12 @@ checkGameOver() {
     
     const audio = new Audio("/plop.mp3");
     await audio.play();
+    
+    // Check for tie after AI move
+    if (this.isBoardFull()) {
+      this.setState({ message: "IT'S A TIE!" });
+      return;
+    }
     
     this.setState({ 
       message: "YOUR TURN!", 

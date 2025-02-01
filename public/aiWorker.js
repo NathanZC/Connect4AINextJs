@@ -8,14 +8,14 @@ self.onmessage = function(e) {
   // Remove positionCache and just keep transposition table
   const transpositionTable = new Map();
 
-  // Replace evaluateWindow with a faster lookup-based approach
+  // Modify the SCORE_TABLE with stronger defensive values
   const SCORE_TABLE = {
-    '4,0': 100000,  // 4 player pieces
-    '0,4': -100000, // 4 opponent pieces
-    '3,0': 10000,   // 3 player pieces, 1 empty
-    '0,3': -10000,  // 3 opponent pieces, 1 empty
-    '2,0': 1000,    // 2 player pieces, 2 empty
-    '0,2': -1000    // 2 opponent pieces, 2 empty
+    '4,0': 100000,    // 4 player pieces - winning
+    '0,4': -100000,   // 4 opponent pieces - losing
+    '3,0': 10000,     // 3 player pieces - strong threat
+    '0,3': -20000,    // 3 opponent pieces - critical block needed (higher to prioritize defense)
+    '2,0': 1000,      // 2 player pieces - developing
+    '0,2': -3000      // 2 opponent pieces - need to block (higher to prioritize defense)
   };
 
   function evaluateWindow(window, player, opponent) {
@@ -81,29 +81,77 @@ self.onmessage = function(e) {
     return score;
   }
 
+  // Modify evaluateBoard for better defensive play
   function evaluateBoard(board) {
     const player = 2;
     const opponent = 1;
     let score = 0;
 
-    // Increase center control importance
+    // Center control weight
     const centerColumn = 3;
-    for (let row = 0; row < ROWS; row++) {
-        if (board[row][centerColumn] === player) score += 200;  // Increased from 50
-        if (board[row][centerColumn] === opponent) score -= 200; // Increased from 40
+    const centerWeight = 300;
+
+    // Check for immediate threats first
+    for (let col = 0; col < COLS; col++) {
+      if (isWinningMove(board, col, opponent)) {
+        score -= 50000; // Heavy penalty for allowing winning moves
+      }
+      if (isWinningMove(board, col, player)) {
+        score += 50000; // High reward for creating winning positions
+      }
     }
 
-    // Add adjacent-to-center control
+    // Center column control
     for (let row = 0; row < ROWS; row++) {
-        if (board[row][2] === player || board[row][4] === player) score += 50;
-        if (board[row][2] === opponent || board[row][4] === opponent) score -= 50;
+      if (board[row][centerColumn] === player) {
+        score += centerWeight * (row + 1); // More value for lower positions
+      }
+      if (board[row][centerColumn] === opponent) {
+        score -= centerWeight * (row + 1);
+      }
     }
 
     // Evaluate all positions
     for (let row = 0; row < ROWS; row++) {
       for (let col = 0; col < COLS; col++) {
         if (board[row][col] !== 0) {
-          score += evaluatePosition(board, row, col, player, opponent);
+          // Evaluate horizontal windows
+          if (col <= 3) {
+            const window = board[row].slice(col, col + 4);
+            score += evaluateWindow(window, player, opponent);
+          }
+
+          // Evaluate vertical windows
+          if (row <= 2) {
+            const window = [
+              board[row][col],
+              board[row + 1][col],
+              board[row + 2][col],
+              board[row + 3][col]
+            ];
+            score += evaluateWindow(window, player, opponent);
+          }
+
+          // Evaluate diagonal windows
+          if (row <= 2 && col <= 3) {
+            const window1 = [
+              board[row][col],
+              board[row + 1][col + 1],
+              board[row + 2][col + 2],
+              board[row + 3][col + 3]
+            ];
+            score += evaluateWindow(window1, player, opponent);
+          }
+
+          if (row <= 2 && col >= 3) {
+            const window2 = [
+              board[row][col],
+              board[row + 1][col - 1],
+              board[row + 2][col - 2],
+              board[row + 3][col - 3]
+            ];
+            score += evaluateWindow(window2, player, opponent);
+          }
         }
       }
     }
@@ -161,25 +209,47 @@ self.onmessage = function(e) {
     return newBoard;
   }
 
+  // Modify getAllPossibleMoves to be more defensive
   function getAllPossibleMoves(board) {
-    // Optimize move ordering for better alpha-beta pruning
     const moves = [];
-    // Prioritize center, then adjacent columns, then outer columns
     const colOrder = [3, 2, 4, 1, 5, 0, 6];
     
-    // Prioritize winning moves and blocking moves first
+    // First check for winning moves
     for (const col of colOrder) {
-        if (board[0][col] === 0) {
-            if (isWinningMove(board, col, 2)) {
-                return [col]; // Immediate winning move, no need to check others
-            }
-            if (isWinningMove(board, col, 1)) {
-                moves.unshift(col); // Prioritize blocking moves
-            } else {
-                moves.push(col);
-            }
-        }
+      if (board[0][col] === 0 && isWinningMove(board, col, 2)) {
+        return [col];
+      }
     }
+
+    // Then check for opponent winning moves to block
+    for (const col of colOrder) {
+      if (board[0][col] === 0 && isWinningMove(board, col, 1)) {
+        return [col]; // Must block immediately
+      }
+    }
+
+    // Then check for moves that create winning opportunities
+    for (const col of colOrder) {
+      if (board[0][col] === 0) {
+        const row = nextAvailableRow(board, col);
+        if (row !== -1) {
+          const newBoard = makeMove(board, col, 2);
+          let threatCount = 0;
+          // Check if this move creates multiple winning threats
+          for (let c = 0; c < COLS; c++) {
+            if (isWinningMove(newBoard, c, 2)) {
+              threatCount++;
+            }
+          }
+          if (threatCount >= 2) {
+            moves.unshift(col); // Prioritize moves that create multiple threats
+            continue;
+          }
+        }
+        moves.push(col);
+      }
+    }
+
     return moves;
   }
 
@@ -231,66 +301,35 @@ self.onmessage = function(e) {
     return moves;
   }
 
-  function quiescenceSearch(board, alpha, beta, isMaximizing, depth = 2) {
-    const standPat = evaluateBoard(board);
-    
-    if (depth <= 0) return standPat;
-    
-    if (isMaximizing) {
-      if (standPat >= beta) return beta;
-      alpha = Math.max(alpha, standPat);
-    } else {
-      if (standPat <= alpha) return alpha;
-      beta = Math.min(beta, standPat);
-    }
-
-    const tacticalMoves = getTacticalMoves(board);
-    if (tacticalMoves.length === 0) return standPat;
-
-    const player = isMaximizing ? 2 : 1;
-    let bestScore = standPat;
-
-    for (const move of tacticalMoves) {
-      const newBoard = makeMove(board, move, player);
-      const score = quiescenceSearch(newBoard, alpha, beta, !isMaximizing, depth - 1);
-
-      if (isMaximizing) {
-        bestScore = Math.max(bestScore, score);
-        alpha = Math.max(alpha, bestScore);
-      } else {
-        bestScore = Math.min(bestScore, score);
-        beta = Math.min(beta, bestScore);
-      }
-
-      if (beta <= alpha) break;
-    }
-
-    return bestScore;
-  }
 
   // Add a simple cache for move sorting results
   const sortedMovesCache = new Map();
 
+  // Modify sortMoves to consider position value
   function sortMoves(board, moves, isMaximizing) {
-    const boardKey = getBoardKey(board) + (isMaximizing ? '1' : '0');
-    
-    if (sortedMovesCache.has(boardKey)) {
-      return sortedMovesCache.get(boardKey);
-    }
-    
     const player = isMaximizing ? 2 : 1;
-    const sorted = moves.sort((a, b) => {
-      const scoreA = evaluatePosition(makeMove(board, a, player), nextAvailableRow(board, a), a, player, player === 2 ? 1 : 2);
-      const scoreB = evaluatePosition(makeMove(board, b, player), nextAvailableRow(board, b), b, player, player === 2 ? 1 : 2);
-      return isMaximizing ? scoreB - scoreA : scoreA - scoreB;
+    const centerColumn = 3;
+    
+    return moves.sort((a, b) => {
+      const boardA = makeMove(board, a, player);
+      const boardB = makeMove(board, b, player);
+      
+      // Get base scores
+      const scoreA = evaluateBoard(boardA);
+      const scoreB = evaluateBoard(boardB);
+      
+      // Add center proximity bonus
+      const centerDistanceA = Math.abs(a - centerColumn);
+      const centerDistanceB = Math.abs(b - centerColumn);
+      
+      const centerBonusA = (4 - centerDistanceA) * 100;
+      const centerBonusB = (4 - centerDistanceB) * 100;
+      
+      const totalScoreA = scoreA + centerBonusA;
+      const totalScoreB = scoreB + centerBonusB;
+      
+      return isMaximizing ? totalScoreB - totalScoreA : totalScoreA - totalScoreB;
     });
-    
-    // Cache the result if not too deep in the tree
-    if (moves.length > 3) {
-      sortedMovesCache.set(boardKey, sorted);
-    }
-    
-    return sorted;
   }
 
   // Optimize miniMax with better pruning and caching
