@@ -2,7 +2,7 @@ self.onmessage = function(e) {
   const { board } = e.data;
   const ROWS = 6;
   const COLS = 7;
-  const MAX_DEPTH = 10;  // Increased depth for better lookahead
+  const MAX_DEPTH = 11;  // Increased depth for better lookahead
   
 
   // Remove positionCache and just keep transposition table
