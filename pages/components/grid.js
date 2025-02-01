@@ -14,17 +14,27 @@ class Grid extends React.Component {
       isAIThinking: false,
     };
     this.cache = new LRUCache({ max: 800 });
+    this.worker = null;
   }
   componentDidMount() {
+    this.worker = new Worker('/aiWorker.js');
     this.initBoard();
+  }
+
+  componentWillUnmount() {
+    if (this.worker) {
+      this.worker.terminate();
+    }
   }
 
   dropPiece(col, player) {
     const row = this.nextAvalibleRowInCol(col);
+    if (row === -1) return false; // Invalid move
+    
     const updatedBoard = [...this.state.board];
-    updatedBoard[row][col] = player === 1 ? 1 : 2;
-
+    updatedBoard[row][col] = player;
     this.setState({ board: updatedBoard });
+    return true;
   }
   evaluateBoard() {
     const player = 2; // AI player
@@ -160,59 +170,36 @@ class Grid extends React.Component {
     this.setState({ board: updatedBoard });
   }
   nextAvalibleRowInCol(col) {
-    var emptySpotFound = false;
-    var rowPosition = 6 - 1;
-
-    while (!emptySpotFound) {
-      // if row is full then the index will go to -1 wich will cause a error when it
-      // gets -1 index of the list. If the row is full the indexes will keep counting
-      // past 0 but this will stop it and just return -1 so I know the column is full
-      // if this method return -1 for the row
-
-      if (rowPosition < 0) {
-        return -1;
-      } else {
-        if (this.state.board[rowPosition][col] === 0) {
-          emptySpotFound = true;
-        } else {
-          rowPosition--;
-        }
+    for (let row = 5; row >= 0; row--) {
+      if (this.state.board[row][col] === 0) {
+        return row;
       }
     }
-    return rowPosition;
+    return -1;  // Column is full
   }
 
   updateboard() {
-    var NewBoardcopy = [];
-    for (var i = 0; i < 7; i++) {
-      NewBoardcopy[i] = [];
-    }
-
-    for (var z = 0; z < 6; z++) {
-      for (var c = 0; c < 7; c++) {
-        NewBoardcopy[z][c] = (
+    var NewBoard = [];
+    for (var i = 0; i < 6; i++) {
+      for (var j = 0; j < 7; j++) {
+        NewBoard.push(
           <Cell
             clicked={this.clicked}
-            key={z + " " + c}
-            id={z + " " + c}
-            spot={this.state.board[z][c]}
+            key={`${i}-${j}`}
+            colIndex={j}
+            id={this.toAString(j)}
+            spot={this.state.board[i][j]}
           />
         );
       }
     }
-
     this.setState({
-      boardDisplay: NewBoardcopy,
+      boardDisplay: NewBoard
     });
   }
 
-  validMove(x) {
-    var isValid = false;
-
-    if (this.nextAvalibleRowInCol(x) !== -1) {
-      isValid = true;
-    }
-    return isValid;
+  validMove(col) {
+    return this.nextAvalibleRowInCol(col) !== -1;
   }
   gameOver() {
     var rows = 6;
@@ -530,6 +517,7 @@ class Grid extends React.Component {
         } else {
           diagonalCounterP2 = 0;
         }
+
         if (diagonalCounterP1 >= 4) {
           return "P1";
         }
@@ -579,38 +567,34 @@ class Grid extends React.Component {
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
     ];
+    
     var NewBoard = [];
-    for (var i = 0; i < 7; i++) {
-      NewBoard[i] = [];
-    }
-    for (i = 0; i < 6; i++) {
+    for (var i = 0; i < 6; i++) {
       for (var j = 0; j < 7; j++) {
-        NewBoard[i][j] = (
+        NewBoard.push(
           <Cell
             clicked={this.clicked}
-            key={i + " " + j}
+            key={`${i}-${j}`}
             colIndex={j}
-            colRow={i + " " + j}
             id={this.toAString(j)}
             spot={stateBoard[i][j]}
           />
         );
       }
     }
-    if (p){
+
+    if (p) {
       this.setState({
         playerOneTurn: 1,
         board: stateBoard,
         boardDisplay: NewBoard,
-        message: "AI is thinking",
-      }, () => {
-        setTimeout(() => {
-          this.playAI();
-        }, 0); // Delay of 1000 milliseconds (1 second)
+        message: "AI is thinking...",
+      }, async () => {
+        await this.playAI();
       });
-    } else{
+    } else {
       this.setState({
         board: stateBoard,
         boardDisplay: NewBoard,
@@ -669,57 +653,74 @@ checkGameOver() {
         }
       }
   }
-  clicked = async (index) => {
-    var jValue = index.slice(2, 3);
-    if (this.validMove(jValue)) {
+  clicked = async (colIndex) => {
+    if (this.validMove(colIndex)) {
       if (!this.gameOver()) {
         if (this.state.playerOneTurn % 2 === 0) {
-          this.setState({ message: "AI is thinking" }, async () => {
-            this.dropPiece(jValue, 1);
+          // Player's move
+          if (this.dropPiece(colIndex, 1)) {
             this.setState({ playerOneTurn: 1 });
-  
-            const audio = new Audio("/plop.mp3");
-  
             this.updateboard();
-            await audio.play(); // Wait for the audio to finish playing
-             this.playAI(() => {
-               this.checkGameOver();
-            });
-          });
+            
+            const audio = new Audio("/plop.mp3");
+            await audio.play();
+            
+            // Start AI turn
+            await this.playAI();
+            this.checkGameOver();
+          }
         }
       } else {
         this.checkGameOver();
       }
     } else {
-       if (!this.gameOver()) {
-        this.setState({ message: "INVALID MOVE. Please try again..." });
-       }
+      if (!this.gameOver()) {
+        this.setState({ message: "INVALID MOVE. Column is full!" });
+      }
     }
   };
   
-  playAI = () => {
-    this.setState({ message: "AI is thinking" }, () => {
-      this.dropPiece(this.aiBestMove(), 2);
-      this.updateboard();
-      this.setState({ message: "YOUR TURN!", playerOneTurn: 2 });
-      const audio = new Audio("/plop.mp3");
-      audio.play(); // Wait for the audio to finish playing
-       this.checkGameOver();
+  runAIMove = () => {
+    return new Promise(resolve => {
+      this.worker.onmessage = (e) => {
+        resolve(e.data);
+      };
+      this.worker.postMessage({ board: this.state.board });
     });
   };
 
+  completeAIMove = async (move) => {
+    this.dropPiece(move, 2);
+    this.updateboard();
+    
+    const audio = new Audio("/plop.mp3");
+    await audio.play();
+    
+    this.setState({ 
+      message: "YOUR TURN!", 
+      playerOneTurn: 2 
+    });
+    
+    this.checkGameOver();
+  };
+
+  playAI = async () => {
+    this.setState({ message: "AI is thinking..." });
+    const move = await this.runAIMove();
+    await this.completeAIMove(move);
+  };
+
   render() {
-    var width = 100 * 7 + "px";
     return (
       <div className="all">
         <div className="container-top">
-        <input
+          <input
             className="buttononly1"
             type="submit"
             value="RESET GAME and GO FIRST"
             onClick={() => this.initBoard(0)}
           />
-                  <input
+          <input
             className="buttononly1"
             type="submit"
             value="RESET GAME and GO SECOND"
@@ -727,14 +728,11 @@ checkGameOver() {
           />
         </div>
 
-        <div className="board" style={{ width: width }}>
+        <div className="board">
           {this.state.boardDisplay}
         </div>
         <div className="container-top">
-        <div className="message">{this.state.message}</div>
-        </div>
-        <div className="container-top">
-        <div className="message">HIGHSCORES<br /> COMING SOON</div>
+          <div className="message">{this.state.message}</div>
         </div>
       </div>
     );

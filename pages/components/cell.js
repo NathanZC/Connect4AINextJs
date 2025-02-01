@@ -8,7 +8,7 @@ class Cell extends React.Component {
     this.state = {
       id: this.props.id,
       spot: this.props.spot,
-      colRow: this.props.colRow,
+      colIndex: this.props.colIndex,
       hovered: false, // Add a new state for hover
     };
   }
@@ -42,9 +42,7 @@ class Cell extends React.Component {
     return (
       <div
         onClick={() => {
-
-          console.log("cell click")
-          this.props.clicked(this.state.colRow);
+          this.props.clicked(this.props.colIndex);
         }}
         className={cellClassName}
         id={this.state.id}
