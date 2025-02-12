@@ -171,13 +171,34 @@ body {
     width: 343px;
     grid-template-columns: repeat(7, 45px);
     margin-top: 1rem;
-    padding: 1rem;
+    padding: 0.75rem;
+    gap: 2px;
   }
 
   .message {
     width: 343px;
     font-size: 1rem;
     padding: 0.75rem 1rem;
+  }
+
+  .emptyCell, .playerOneCell, .playerTwoCell {
+    height: 45px;
+    width: 45px;
+  }
+  
+  .emptyCell::before, .playerOneCell::before, .playerTwoCell::before {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Add even smaller screen support */
+@media (max-width: 360px) {
+  .board {
+    width: 300px;
+    grid-template-columns: repeat(7, 40px);
+    padding: 0.5rem;
+    gap: 1px;
   }
 
   .emptyCell, .playerOneCell, .playerTwoCell {
@@ -189,6 +210,10 @@ body {
     width: 35px;
     height: 35px;
   }
+
+  .message {
+    width: 300px;
+  }
 }
 
 .hovered {
@@ -199,47 +224,35 @@ body {
   margin: auto;
   margin-top: 100px;
 }
-.playerOneCell {
-  background-color: rgb(0, 0, 213); /* Change background color to blue */
+.playerOneCell, .playerTwoCell {
+  background-color: rgb(0, 0, 213);
   border: 2px solid black;
-  margin-left: -1px;
-  margin-bottom: -4px;
-  display: inline-flex;
+  margin: 0;
+  padding: 0;
+  display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  box-sizing: border-box;
+}
+
+.playerOneCell::before, .playerTwoCell::before {
+  content: "";
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  box-sizing: border-box;
 }
 
 .playerOneCell::before {
-  content: "";
-  position: absolute;
-  width: 70px;
-  height: 70px;
+  background-color: #ff2600;
   box-shadow: 0 0 10px rgba(255,99,71,0.8);
-  background-color: #ff2600; /* tomato red */
-  border-radius: 50%;
-}
-.playerTwoCell {
-  background-color: rgb(0, 0, 213); /* Change background color to blue */
-  
-  border: 2px solid black;
-  margin-left: -1px;
-  margin-bottom: -4px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
 }
 
 .playerTwoCell::before {
-  content: "";
-  
-  position: absolute;
-  width: 70px;
-  height: 70px;
-  background-color: #ffd700; /* gold */
+  background-color: #ffd700;
   box-shadow: 0 0 10px rgba(255, 222, 35, 0.592);
-  border-radius: 50%;
 }
 
 .button {
